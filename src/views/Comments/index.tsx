@@ -53,6 +53,7 @@ export const Comments = () => {
       },
       id: generateRandomNumber().toString(),
       message: event.nativeEvent.text,
+      date: new Date(),
     };
     setSelectedUser(Math.floor(Math.random() * Users.length));
     if (inputState.isReplying && inputState.commentToReplyTo) {

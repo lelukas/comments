@@ -8,4 +8,5 @@ export interface Comment {
   replies?: Comment[];
   replyType?: 'inner' | 'outer';
   isRootComment?: boolean;
+  date: Date | string;
 }
