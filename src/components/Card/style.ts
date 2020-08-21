@@ -4,12 +4,13 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {Constants} from '../../constants';
 
-export const Container = styled.View<{noBottomMargin?: boolean}>`
+export const Container = styled.View<{bottomMargin?: boolean}>`
   background: ${Colors.white};
   elevation: 8;
   padding: 14px;
   border-radius: 8px;
-  margin-top: 10px;
+  margin-bottom: ${({bottomMargin}) =>
+    bottomMargin ? `${Constants.CARD_MARGIN}px` : '0'};
 `;
 
 export const Row = styled.View<{spaced?: boolean}>`
@@ -20,7 +21,7 @@ export const Row = styled.View<{spaced?: boolean}>`
 export const UserPicture = styled.Image`
   width: 35px;
   height: 35px;
-  background: ${Colors.grayLight};
+  background: ${Colors.grayLighter};
   border-radius: 9999px;
   margin-right: 10px;
 `;
@@ -43,7 +44,7 @@ export const OptionsButton = styled.View`
 `;
 
 export const OptionsIcon = styled(Icon).attrs({name: 'ellipsis-v'})`
-  color: ${Colors.gray};
+  color: ${Colors.grayLight};
 `;
 
 export const Message = styled.Text`
@@ -52,10 +53,12 @@ export const Message = styled.Text`
 
 export const Button = styled.View`
   border-radius: 9999px;
-  background: ${Colors.grayLight};
-  padding: 5px 15px;
+  background: ${Colors.grayLighter};
+  padding: 5px 0;
+  width: 80px;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 export const ButtonIcon = styled(Icon)`
@@ -78,4 +81,5 @@ export const HeartIcon = styled(Icon).attrs({name: 'heart'})`
 
 export const ButtonLabel = styled.Text`
   color: ${Colors.gray};
+  width: 40%;
 `;

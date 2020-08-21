@@ -7,5 +7,5 @@ export interface Comment {
   liked?: boolean;
   replies?: Comment[];
   replyType?: 'inner' | 'outer';
-  rootComment?: boolean;
+  isRootComment?: boolean;
 }

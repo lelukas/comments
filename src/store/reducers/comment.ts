@@ -19,18 +19,6 @@ const initialState: State = {
   comments: [],
 };
 
-const addReplyType = (comments: Comment[]): void => {
-  comments.forEach((comment) => {
-    if (comment.rootComment && comment.replies?.length) {
-      comment.replyType = 'outer';
-      addReplyType(comment.replies);
-    } else if (comment.replies) {
-      comment.replyType = 'inner';
-      addReplyType(comment.replies);
-    }
-  });
-};
-
 const toggleLikeComment = (comments: Comment[], likedComment: Comment) => {
   comments.forEach((comment) => {
     if (comment.id === likedComment.id) {
@@ -50,7 +38,6 @@ export const userReducer = (state = initialState, action: Action) => {
         }
         return comment;
       });
-      addReplyType(updatedComments);
       AsyncStorage.setItem('@comments', JSON.stringify(updatedComments));
       return {comments: updatedComments};
     case 'comment/ADD':
@@ -79,7 +66,7 @@ export const useCommentSelector = () =>
 
 export const CommentActions = {
   addComment(newComment: Comment): Action {
-    return {type: 'comment/ADD', comment: {...newComment, rootComment: true}};
+    return {type: 'comment/ADD', comment: {...newComment, isRootComment: true}};
   },
   addReplyToComment(parentComment: Comment, newComment: Comment): Action {
     if (!parentComment.replies) {

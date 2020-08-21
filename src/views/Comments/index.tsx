@@ -25,7 +25,6 @@ import {Card} from '../../components/Card';
 import {CommentActions, useCommentSelector} from '../../store/reducers/comment';
 import {Comment} from '../../interfaces/Comment';
 import {useDispatch} from 'react-redux';
-import uniqueId from 'lodash.uniqueid';
 import {Users} from '../../constants';
 
 export const Comments = () => {
@@ -52,7 +51,7 @@ export const Comments = () => {
         name: Users[selectedUser].name,
         profilePicture: Users[selectedUser].profilePicture,
       },
-      id: uniqueId(),
+      id: generateRandomNumber().toString(),
       message: event.nativeEvent.text,
     };
     setSelectedUser(Math.floor(Math.random() * Users.length));
@@ -71,6 +70,10 @@ export const Comments = () => {
       isReplying: false,
     });
     inputRef.current?.clear();
+  };
+
+  const generateRandomNumber = (): number => {
+    return Math.floor(Math.random() * 10000) + 1;
   };
 
   const handleLike = (comment: Comment) => {
@@ -94,13 +97,13 @@ export const Comments = () => {
     });
   };
 
-  const renderCommentCard = (comment: Comment, noBottomMargin?: boolean) => {
+  const renderCommentCard = (comment: Comment) => {
     return (
       <Card
         comment={comment}
         onReply={handleReply}
         onLike={handleLike}
-        noBottomMargin={noBottomMargin}
+        bottomMargin={comment.isRootComment}
       />
     );
   };
@@ -112,9 +115,11 @@ export const Comments = () => {
           <Fragment key={comment.id}>
             {comment.replies && comment.replies.length ? (
               <>
-                {renderCommentCard(comment, true)}
-                <ReplyContainer key={comment.id}>
-                  <CardBar replyType={comment.replyType} />
+                {renderCommentCard(comment)}
+                <ReplyContainer
+                  isRootComment={comment.isRootComment}
+                  key={comment.id}>
+                  <CardBar isFirstLevelReply={comment.isRootComment} />
                   {renderCommentsArr(comment.replies)}
                 </ReplyContainer>
               </>

@@ -1,16 +1,12 @@
 import styled from 'styled-components/native';
 import {Colors} from '../../colors';
 import {Constants} from '../../constants';
-import {Comment} from '../../interfaces/Comment';
 
-const setBarBackground = (replyType?: Comment['replyType']) => {
-  if (replyType) {
-    if (replyType === 'outer') {
-      return Colors.purpleLight;
-    }
-    return Colors.purpleLighter;
+const setBarBackground = (isFirstLevelReply?: boolean) => {
+  if (isFirstLevelReply) {
+    return Colors.purpleLight;
   }
-  return undefined;
+  return Colors.purpleLighter;
 };
 
 export const Container = styled.View`
@@ -44,13 +40,13 @@ export const CommentCard = styled.View`
   elevation: 8;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: ${Constants.CARD_MARGIN}px;
 `;
 
 export const UserPicture = styled.Image`
   width: 32px;
   height: 32px;
-  background: ${Colors.grayLight};
+  background: ${Colors.grayLighter};
   border-radius: 9999px;
   margin-right: 20px;
 `;
@@ -58,7 +54,7 @@ export const UserPicture = styled.Image`
 export const Input = styled.TextInput.attrs({returnKeyType: 'send'})`
   padding: 5px 15px;
   border-radius: 8px;
-  background: ${Colors.grayLight};
+  background: ${Colors.grayLighter};
   flex: 1;
 `;
 
@@ -77,13 +73,14 @@ export const CommentsSection = styled.View`
   padding: 0 5px;
 `;
 
-export const ReplyContainer = styled.View`
+export const ReplyContainer = styled.View<{isRootComment?: boolean}>`
   padding-left: 20px;
-  margin-top: ${Constants.CARD_MARGIN}px;
-  margin-bottom: ${Constants.CARD_MARGIN}px;
+  margin-top: ${({isRootComment}) =>
+    isRootComment ? '0' : `${Constants.CARD_MARGIN}px`};
+  margin-bottom: ${({isRootComment}) => (isRootComment ? '20px' : '0')};
 `;
 
-export const CardBar = styled.View<{replyType?: Comment['replyType']}>`
+export const CardBar = styled.View<{isFirstLevelReply?: boolean}>`
   width: 7px;
   border-radius: 9999px;
   margin: 0 10px 10px;
@@ -91,5 +88,5 @@ export const CardBar = styled.View<{replyType?: Comment['replyType']}>`
   left: -11px;
   top: 0;
   height: 100%;
-  background: ${({replyType}) => setBarBackground(replyType)};
+  background: ${({isFirstLevelReply}) => setBarBackground(isFirstLevelReply)};
 `;
