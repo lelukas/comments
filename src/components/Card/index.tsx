@@ -12,6 +12,8 @@ import {
   ButtonIcon,
   HeartIcon,
   FilledHeartIcon,
+  OptionsButton,
+  OptionsIcon,
 } from './style';
 import {Comment} from '../../interfaces/Comment';
 
@@ -39,6 +41,9 @@ export const Card: React.FC<Props> = ({
               <CommentTime>5 min ago</CommentTime>
             </View>
           </Row>
+          <OptionsButton>
+            <OptionsIcon />
+          </OptionsButton>
         </Row>
         <Message>{comment.message}</Message>
         <Row>

@@ -2,26 +2,31 @@ import {useSelector} from 'react-redux';
 import {Comment} from '../../interfaces/Comment';
 import {AppState} from '../index';
 import AsyncStorage from '@react-native-community/async-storage';
+import {ThunkAction} from 'redux-thunk';
 
 interface State {
   comments: Comment[];
 }
 
 type Action =
-  | {type: 'comment/REPLY_COMMENT'; updatedComment: Comment}
-  | {type: 'comment/ADD_COMMENT'; comment: Comment}
-  | {type: 'comment/LIKE_COMMENT'; likedComment: Comment}
-  | {type: 'comment/REPOPULATE'};
+  | {type: 'comment/REPLY'; updatedComment: Comment}
+  | {type: 'comment/ADD'; comment: Comment}
+  | {type: 'comment/LIKE'; likedComment: Comment}
+  | {type: 'comment/CLEAR'}
+  | {type: 'comment/REPOPULATE'; comments: Comment[]};
 
 const initialState: State = {
   comments: [],
 };
 
-const addRepliesLevels = (comments: Comment[], level: number): void => {
+const addReplyType = (comments: Comment[]): void => {
   comments.forEach((comment) => {
-    if (comment.replies) {
-      comment.replyLevel = level;
-      addRepliesLevels(comment.replies, (level += 1));
+    if (comment.rootComment && comment.replies?.length) {
+      comment.replyType = 'outer';
+      addReplyType(comment.replies);
+    } else if (comment.replies) {
+      comment.replyType = 'inner';
+      addReplyType(comment.replies);
     }
   });
 };
@@ -38,27 +43,32 @@ const toggleLikeComment = (comments: Comment[], likedComment: Comment) => {
 
 export const userReducer = (state = initialState, action: Action) => {
   switch (action.type) {
-    case 'comment/REPLY_COMMENT':
+    case 'comment/REPLY':
       const updatedComments = state.comments.map((comment) => {
         if (comment.id === action.updatedComment.id) {
           return action.updatedComment;
         }
         return comment;
       });
-      addRepliesLevels(updatedComments, 1);
+      addReplyType(updatedComments);
       AsyncStorage.setItem('@comments', JSON.stringify(updatedComments));
       return {comments: updatedComments};
-    case 'comment/ADD_COMMENT':
+    case 'comment/ADD':
       AsyncStorage.setItem(
         '@comments',
         JSON.stringify([action.comment, ...state.comments]),
       );
       return {comments: [action.comment, ...state.comments]};
-    case 'comment/LIKE_COMMENT':
+    case 'comment/LIKE':
       const commentsCopy = [...state.comments];
       toggleLikeComment(commentsCopy, action.likedComment);
       AsyncStorage.setItem('@comments', JSON.stringify(commentsCopy));
       return {comments: commentsCopy};
+    case 'comment/REPOPULATE':
+      return {comments: action.comments};
+    case 'comment/CLEAR':
+      AsyncStorage.removeItem('@comments');
+      return {comments: []};
     default:
       return state;
   }
@@ -69,20 +79,29 @@ export const useCommentSelector = () =>
 
 export const CommentActions = {
   addComment(newComment: Comment): Action {
-    return {type: 'comment/ADD_COMMENT', comment: newComment};
+    return {type: 'comment/ADD', comment: {...newComment, rootComment: true}};
   },
   addReplyToComment(parentComment: Comment, newComment: Comment): Action {
     if (!parentComment.replies) {
       parentComment.replies = [];
+      // parentComment.replyLevel = 1;
     }
     parentComment.replies?.push(newComment);
-    return {type: 'comment/REPLY_COMMENT', updatedComment: parentComment};
+    return {type: 'comment/REPLY', updatedComment: parentComment};
   },
   likeComment(likedComment: Comment): Action {
-    return {type: 'comment/LIKE_COMMENT', likedComment: likedComment};
+    return {type: 'comment/LIKE', likedComment: likedComment};
   },
-  repopulate(): Action {
-    // todo: instalar thunk. é ... num deu.
-    return {type: 'comment/REPOPULATE'};
+  repopulate(): ThunkAction<Promise<void>, AppState, never, Action> {
+    return async (dispatch) => {
+      const comments = await AsyncStorage.getItem('@comments');
+      dispatch({
+        type: 'comment/REPOPULATE',
+        comments: comments ? (JSON.parse(comments) as Comment[]) : [],
+      });
+    };
+  },
+  clearComments(): Action {
+    return {type: 'comment/CLEAR'};
   },
 };

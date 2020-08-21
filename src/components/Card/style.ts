@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {Constants} from '../../constants';
 
-export const Container = styled.View<{isReply?: boolean}>`
+export const Container = styled.View<{noBottomMargin?: boolean}>`
   background: ${Colors.white};
   elevation: 8;
   padding: 14px;
@@ -33,6 +33,17 @@ export const UserName = styled.Text`
 export const CommentTime = styled.Text`
   color: ${Colors.gray};
   font-size: 12px;
+`;
+
+export const OptionsButton = styled.View`
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const OptionsIcon = styled(Icon).attrs({name: 'ellipsis-v'})`
+  color: ${Colors.gray};
 `;
 
 export const Message = styled.Text`

@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {useRef, useState, Fragment} from 'react';
+import {useState, Fragment, useRef} from 'react';
 import {
   NativeSyntheticEvent,
   ScrollView,
   TextInput,
   TextInputSubmitEditingEventData,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import {
   Container,
@@ -17,38 +16,17 @@ import {
   DismissReplyButton,
   DismissReplyLabel,
   CardBar,
-  ScrollContainer,
   ReplyContainer,
+  Header,
+  ClearText,
+  CommentsSection,
 } from './style';
 import {Card} from '../../components/Card';
 import {CommentActions, useCommentSelector} from '../../store/reducers/comment';
-import {User} from '../../interfaces/User';
 import {Comment} from '../../interfaces/Comment';
 import {useDispatch} from 'react-redux';
 import uniqueId from 'lodash.uniqueid';
-
-const users: User[] = [
-  {
-    profilePicture:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQnOaRBUJ8JTzaYlHWxjZa-es7JL69plZ2_yw&usqp=CAU',
-    name: 'Corbin Simpson',
-  },
-  {
-    profilePicture:
-      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200',
-    name: 'Braden Moss',
-  },
-  {
-    profilePicture:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS7wNVnTDhgihBY8SQQsFjroOtDwzGKiLTXw&usqp=CAU',
-    name: 'Carson Fuentes',
-  },
-  {
-    profilePicture:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTq4H7mPnTLV9rtqZ7_W5NeAhudM0OXP3UNNQ&usqp=CAU',
-    name: 'Julian Rayner',
-  },
-];
+import {Users} from '../../constants';
 
 export const Comments = () => {
   const {comments} = useCommentSelector();
@@ -62,8 +40,8 @@ export const Comments = () => {
     placeholder: 'Add your comment here',
     isReplying: false,
   });
-  const inputRef = useRef<TextInput>();
-  const scrollRef = useRef<ScrollView>();
+  const inputRef = useRef<TextInput>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
   const pushNewComment = (
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
@@ -71,13 +49,13 @@ export const Comments = () => {
     event.persist();
     const newComment: Comment = {
       user: {
-        name: users[selectedUser].name,
-        profilePicture: users[selectedUser].profilePicture,
+        name: Users[selectedUser].name,
+        profilePicture: Users[selectedUser].profilePicture,
       },
       id: uniqueId(),
       message: event.nativeEvent.text,
     };
-    setSelectedUser(Math.floor(Math.random() * users.length));
+    setSelectedUser(Math.floor(Math.random() * Users.length));
     if (inputState.isReplying && inputState.commentToReplyTo) {
       dispatch(
         CommentActions.addReplyToComment(
@@ -88,6 +66,10 @@ export const Comments = () => {
     } else {
       dispatch(CommentActions.addComment(newComment));
     }
+    setInputState({
+      placeholder: 'Add your comment here',
+      isReplying: false,
+    });
     inputRef.current?.clear();
   };
 
@@ -132,7 +114,7 @@ export const Comments = () => {
               <>
                 {renderCommentCard(comment, true)}
                 <ReplyContainer key={comment.id}>
-                  <CardBar replyLevel={comment.replyLevel} />
+                  <CardBar replyType={comment.replyType} />
                   {renderCommentsArr(comment.replies)}
                 </ReplyContainer>
               </>
@@ -145,12 +127,23 @@ export const Comments = () => {
     );
   };
 
+  const clearComments = (): void => {
+    dispatch(CommentActions.clearComments());
+  };
+
   return (
     <Container>
       <ScrollView ref={scrollRef} contentContainerStyle={{padding: 20}}>
-        <Title>Comments</Title>
+        <Header>
+          <Title>Comments</Title>
+          {comments.length ? (
+            <TouchableOpacity onPress={clearComments}>
+              <ClearText>Clear all comments</ClearText>
+            </TouchableOpacity>
+          ) : undefined}
+        </Header>
         <CommentCard>
-          <UserPicture source={{uri: users[selectedUser].profilePicture}} />
+          <UserPicture source={{uri: Users[selectedUser].profilePicture}} />
           <Input
             ref={inputRef}
             placeholder={inputState.placeholder}
@@ -164,7 +157,7 @@ export const Comments = () => {
             </TouchableOpacity>
           ) : undefined}
         </CommentCard>
-        {renderCommentsArr(comments)}
+        <CommentsSection>{renderCommentsArr(comments)}</CommentsSection>
       </ScrollView>
     </Container>
   );

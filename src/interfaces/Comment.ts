@@ -6,5 +6,6 @@ export interface Comment {
   message: string;
   liked?: boolean;
   replies?: Comment[];
-  replyLevel?: number;
+  replyType?: 'inner' | 'outer';
+  rootComment?: boolean;
 }
