@@ -1,5 +1,10 @@
 import * as React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  LayoutChangeEvent,
+  useWindowDimensions,
+} from 'react-native';
 import {
   differenceInMinutes,
   differenceInHours,
@@ -21,10 +26,12 @@ import {
   OptionsIcon,
 } from './style';
 import {Comment} from '../../interfaces/Comment';
+import {useState} from 'react';
 
 const WHOLE_DAY = 24;
 const WHOLE_HOUR = 60;
 const ONE_MINUTE = 1;
+const FIFTY_PER_CENT = 0.5;
 
 interface Props {
   comment: Comment;
@@ -39,6 +46,11 @@ export const Card: React.FC<Props> = ({
   onLike,
   bottomMargin,
 }) => {
+  const [shouldRenderButtonLabels, setShouldRenderButtonLabels] = useState<
+    boolean
+  >(true);
+  const viewportWidth = useWindowDimensions().width;
+
   const getTimeFromNow = (dateTime: Comment['date']) => {
     let date;
     if (typeof dateTime === 'string') {
@@ -64,8 +76,19 @@ export const Card: React.FC<Props> = ({
     return `${daysDifference} ${daysDifference === 1 ? 'day ago' : 'days ago'}`;
   };
 
+  const getCardWidth = (event: LayoutChangeEvent): void => {
+    event.persist();
+    const cardWidth = parseInt(event.nativeEvent.layout.width.toString());
+    const viewportWidthLimit = parseInt(
+      (viewportWidth * FIFTY_PER_CENT).toString(),
+    );
+    setShouldRenderButtonLabels(cardWidth >= viewportWidthLimit);
+  };
+
   return (
-    <Container bottomMargin={bottomMargin}>
+    <Container
+      bottomMargin={bottomMargin}
+      onLayout={(event) => getCardWidth(event)}>
       <Row spaced>
         <Row>
           <UserPicture source={{uri: comment.user.profilePicture}} />
@@ -83,17 +106,21 @@ export const Card: React.FC<Props> = ({
         <TouchableOpacity
           style={{marginRight: 10}}
           onPress={() => onReply(comment)}>
-          <Button>
+          <Button isSmall={!shouldRenderButtonLabels}>
             <ButtonIcon name="reply" />
-            <ButtonLabel>Reply</ButtonLabel>
+            {shouldRenderButtonLabels ? (
+              <ButtonLabel>Reply</ButtonLabel>
+            ) : undefined}
           </Button>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => onLike(comment)}>
-          <Button>
+          <Button isSmall={!shouldRenderButtonLabels}>
             {comment.liked ? <FilledHeartIcon /> : <HeartIcon />}
-            <ButtonLabel purple={comment.liked}>
-              {comment.liked ? 'Liked' : 'Like'}
-            </ButtonLabel>
+            {shouldRenderButtonLabels ? (
+              <ButtonLabel purple={comment.liked}>
+                {comment.liked ? 'Liked' : 'Like'}
+              </ButtonLabel>
+            ) : undefined}
           </Button>
         </TouchableOpacity>
       </Row>

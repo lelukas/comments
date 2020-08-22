@@ -10,6 +10,7 @@ export const Container = styled.View<{bottomMargin?: boolean}>`
   shadow-opacity: 0.1;
   margin-bottom: ${({bottomMargin}) =>
     bottomMargin ? `${Constants.CARD_MARGIN}px` : '0'};
+  overflow: hidden;
 `;
 
 export const Row = styled.View<{spaced?: boolean}>`
@@ -50,30 +51,27 @@ export const Message = styled.Text`
   margin: 12px 0;
 `;
 
-export const Button = styled.View`
+export const Button = styled.View<{isSmall: boolean}>`
   border-radius: 9999px;
   background: ${Colors.grayLighter};
-  padding: 5px 0;
-  width: 92px;
+  padding: ${({isSmall}) => (isSmall ? '5px 10px' : '5px 0')};
+  ${({isSmall}) => (isSmall ? undefined : `width: 92px`)};
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 
 export const ButtonIcon = styled(Icon)`
-  margin-right: 10px;
   color: ${Colors.gray};
   font-size: 16px;
 `;
 
 export const FilledHeartIcon = styled(AntIcon).attrs({name: 'heart'})`
-  margin-right: 10px;
   color: ${Colors.purple}
   font-size: 16px;
 `;
 
 export const HeartIcon = styled(Icon).attrs({name: 'heart'})`
-  margin-right: 10px;
   color: ${Colors.gray};
   font-size: 16px;
 `;
@@ -81,4 +79,5 @@ export const HeartIcon = styled(Icon).attrs({name: 'heart'})`
 export const ButtonLabel = styled.Text<{purple?: boolean}>`
   color: ${({purple}) => (purple ? Colors.purple : Colors.gray)};
   width: 40%;
+  margin-left: 10px;
 `;
