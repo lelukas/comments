@@ -7,6 +7,7 @@ import {
   TextInputSubmitEditingEventData,
   TouchableOpacity,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Container,
   Title,
@@ -24,10 +25,12 @@ import {
 import {Card} from '../../components/Card';
 import {CommentActions, useCommentSelector} from '../../store/reducers/comment';
 import {Comment} from '../../interfaces/Comment';
-import {useDispatch} from 'react-redux';
 import {Users} from '../../constants';
 
-export const Comments = () => {
+const MIN_ID_VALUE = 1;
+const MAX_ID_VALUE = 10000;
+
+export const Comments = (): JSX.Element => {
   const {comments} = useCommentSelector();
   const dispatch = useDispatch();
   const [selectedUser, setSelectedUser] = useState<number>(0);
@@ -39,8 +42,16 @@ export const Comments = () => {
     placeholder: 'Add your comment here',
     isReplying: false,
   });
+
+  // Explanation: explicit null required due type checking errors
+  /* eslint-disable no-null/no-null */
   const inputRef = useRef<TextInput>(null);
   const scrollRef = useRef<ScrollView>(null);
+  /* eslint-enable */
+
+  const generateRandomNumber = (): number => {
+    return Math.floor(Math.random() * MAX_ID_VALUE) + MIN_ID_VALUE;
+  };
 
   const pushNewComment = (
     event: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
@@ -71,10 +82,6 @@ export const Comments = () => {
       isReplying: false,
     });
     inputRef.current?.clear();
-  };
-
-  const generateRandomNumber = (): number => {
-    return Math.floor(Math.random() * 10000) + 1;
   };
 
   const handleLike = (comment: Comment) => {

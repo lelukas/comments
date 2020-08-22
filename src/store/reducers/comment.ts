@@ -29,7 +29,7 @@ const toggleLikeComment = (comments: Comment[], likedComment: Comment) => {
   });
 };
 
-export const userReducer = (state = initialState, action: Action) => {
+export const userReducer = (state = initialState, action: Action): State => {
   switch (action.type) {
     case 'comment/REPLY':
       const updatedComments = state.comments.map((comment) => {
@@ -61,7 +61,7 @@ export const userReducer = (state = initialState, action: Action) => {
   }
 };
 
-export const useCommentSelector = () =>
+export const useCommentSelector = (): State =>
   useSelector<AppState, State>((store) => store.comment);
 
 export const CommentActions = {

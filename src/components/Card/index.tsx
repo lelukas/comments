@@ -1,6 +1,11 @@
 import * as React from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import {
+  differenceInMinutes,
+  differenceInHours,
+  differenceInDays,
+} from 'date-fns';
+import {
   CommentTime,
   Container,
   Row,
@@ -16,11 +21,6 @@ import {
   OptionsIcon,
 } from './style';
 import {Comment} from '../../interfaces/Comment';
-import {
-  differenceInMinutes,
-  differenceInHours,
-  differenceInDays,
-} from 'date-fns';
 
 const WHOLE_DAY = 24;
 const WHOLE_HOUR = 60;

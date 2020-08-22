@@ -4,7 +4,7 @@ import {useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {CommentActions} from './store/reducers/comment';
 
-const App = () => {
+const App = (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {
