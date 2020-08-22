@@ -71,7 +71,6 @@ export const CommentActions = {
   addReplyToComment(parentComment: Comment, newComment: Comment): Action {
     if (!parentComment.replies) {
       parentComment.replies = [];
-      // parentComment.replyLevel = 1;
     }
     parentComment.replies?.push(newComment);
     return {type: 'comment/REPLY', updatedComment: parentComment};
