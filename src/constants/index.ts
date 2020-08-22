@@ -43,7 +43,7 @@ export const Users: User[] = [
   },
   {
     profilePicture:
-      'https://lh3.googleusercontent.com/proxy/pXVQR_NEQFigG9cg3QCCjdc-yBRc5Gwx4If6XlBhSSeOnH6_IaoPYV-rRKdpNPyqg3g3MpzW8zlWLZCYR8dahxGgnSwrnlLynjcKjJbywk-gzEO47Z1H7ILM56piWoJ_ZrMnBqj8h71gJnmMVpfOoqFqphCnxjTJBdW4kxpPo8zbjuyFNmJh0Go',
+      'https://villages-news.com/wp-content/uploads/2014/11/Peggy-Klemm.jpg',
     name: 'Alanis Guy',
   },
 ];
