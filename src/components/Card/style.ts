@@ -3,12 +3,11 @@ import {Colors} from '../../colors';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import {Constants} from '../../constants';
+import {cardStyles} from '../../GlobalStyles';
 
 export const Container = styled.View<{bottomMargin?: boolean}>`
-  background: ${Colors.white};
-  elevation: 8;
-  padding: 14px;
-  border-radius: 8px;
+  ${cardStyles};
+  shadow-opacity: 0.1;
   margin-bottom: ${({bottomMargin}) =>
     bottomMargin ? `${Constants.CARD_MARGIN}px` : '0'};
 `;
@@ -55,7 +54,7 @@ export const Button = styled.View`
   border-radius: 9999px;
   background: ${Colors.grayLighter};
   padding: 5px 0;
-  width: 80px;
+  width: 92px;
   flex-direction: row;
   align-items: center;
   justify-content: center;

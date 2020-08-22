@@ -146,7 +146,9 @@ export const Comments = (): JSX.Element => {
 
   return (
     <Container>
-      <ScrollView ref={scrollRef} contentContainerStyle={{padding: 20}}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={{paddingHorizontal: 20, paddingTop: 5}}>
         <Header>
           <Title>Comments</Title>
           {comments.length ? (

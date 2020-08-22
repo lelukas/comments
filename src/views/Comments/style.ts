@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import {Colors} from '../../colors';
 import {Constants} from '../../constants';
+import {cardStyles} from '../../GlobalStyles';
 
 const setBarBackground = (isFirstLevelReply?: boolean) => {
   if (isFirstLevelReply) {
@@ -34,10 +35,8 @@ export const ClearText = styled.Text`
 `;
 
 export const CommentCard = styled.View`
-  padding: 15px 20px;
-  background: ${Colors.white};
-  border-radius: 16px;
-  elevation: 8;
+  ${cardStyles};
+  shadow-opacity: 0.05;
   flex-direction: row;
   align-items: center;
   margin-bottom: ${Constants.CARD_MARGIN}px;
