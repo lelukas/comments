@@ -91,7 +91,9 @@ export const Card: React.FC<Props> = ({
         <TouchableOpacity onPress={() => onLike(comment)}>
           <Button>
             {comment.liked ? <FilledHeartIcon /> : <HeartIcon />}
-            <ButtonLabel>{comment.liked ? 'Liked' : 'Like'}</ButtonLabel>
+            <ButtonLabel purple={comment.liked}>
+              {comment.liked ? 'Liked' : 'Like'}
+            </ButtonLabel>
           </Button>
         </TouchableOpacity>
       </Row>

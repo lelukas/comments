@@ -78,7 +78,7 @@ export const HeartIcon = styled(Icon).attrs({name: 'heart'})`
   font-size: 16px;
 `;
 
-export const ButtonLabel = styled.Text`
-  color: ${Colors.gray};
+export const ButtonLabel = styled.Text<{purple?: boolean}>`
+  color: ${({purple}) => (purple ? Colors.purple : Colors.gray)};
   width: 40%;
 `;

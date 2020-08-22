@@ -1,5 +1,5 @@
 import {css} from 'styled-components';
-import {Colors} from "./colors";
+import {Colors} from './colors';
 
 export const cardStyles = css`
   shadow-offset: 0px 6px;
